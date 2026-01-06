@@ -16,7 +16,8 @@
     "db:push": "turbo -F @casty-app/db db:push",
     "db:studio": "turbo -F @casty-app/db db:studio",
     "db:generate": "turbo -F @casty-app/db db:generate",
-    "db:migrate": "turbo -F @casty-app/db db:migrate"
+    "db:migrate": "turbo -F @casty-app/db db:migrate",
+    "db:seed": "turbo -F @casty-app/db db:seed"
   },
   "dependencies": {
     "@casty-app/env": "workspace:*",

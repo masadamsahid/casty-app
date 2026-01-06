@@ -55,7 +55,8 @@ casty-app/
 ├── packages/
 │   ├── api/         # API layer / business logic
 │   ├── auth/        # Authentication configuration & logic
-│   └── db/          # Database schema & queries
+│   ├── db/          # Database schema & queries
+│   └── env/         # Environment variables
 ```
 
 ## Available Scripts

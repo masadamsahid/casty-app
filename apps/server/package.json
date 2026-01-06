@@ -13,14 +13,18 @@
     "@casty-app/auth": "workspace:*",
     "@casty-app/db": "workspace:*",
     "@casty-app/env": "workspace:*",
+    "@google-cloud/storage": "^7.18.0",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
+    "drizzle-orm": "^0.45.1",
     "hono": "^4.8.2",
+    "uuid": "^13.0.0",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@casty-app/config": "workspace:*",
     "@types/bun": "catalog:",
+    "@types/uuid": "^11.0.0",
     "tsdown": "^0.16.5",
     "typescript": "catalog:"
   }
