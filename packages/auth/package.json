@@ -1,0 +1,24 @@
+{
+  "name": "@casty-app/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@casty-app/db": "workspace:*",
+    "@casty-app/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@casty-app/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
