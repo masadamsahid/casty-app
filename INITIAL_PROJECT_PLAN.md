@@ -241,6 +241,12 @@ In this app there are several main entities:
 
 
 
+## Main Layouts
+- Sticky navbar: There are page links to Home/Casty's Logo, Castings, Talents, and Agencies. Additionally on the right side, there are a dark mode toggle ("light" and "dark" only) and user button with drop down menu ("My Profile", "My Applications", "My Casting Posts", "Logout")
+- Content area
+- Footer (Copyright, Privacy Policy, Terms of Service, Contact Us)
+
+
 ## Feature List
 
 For the detailed features, we can follow the below features:
@@ -326,7 +332,3 @@ For the detailed features, we can follow the below features:
 - Display some castings
 
 
-## Main Layouts
-- Sticky navbar: There are page links to Home/Casty's Logo, Castings, Talents, and Agencies. Additionally on the right side, there are a dark mode toggle ("light" and "dark" only) and user button with drop down menu ("My Profile", "My Applications", "My Casting Posts", "Logout")
-- Content area
-- Footer (Copyright, Privacy Policy, Terms of Service, Contact Us)

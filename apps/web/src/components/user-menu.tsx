@@ -33,29 +33,47 @@ export default function UserMenu() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="outline" />}>
-        {session.user.name}
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">
+          {session.user.name}
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-card">
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{session.user.name}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {session.user.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>{session.user.email}</DropdownMenuItem>
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() => {
-              authClient.signOut({
-                fetchOptions: {
-                  onSuccess: () => {
-                    router.push("/");
-                  },
-                },
-              });
-            }}
-          >
-            Sign Out
+          <DropdownMenuItem onClick={() => router.push("/profile")}>
+            My Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/applications")}>
+            My Applications
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/my-castings")}>
+            My Casting Posts
           </DropdownMenuItem>
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-destructive focus:text-destructive"
+          onClick={() => {
+            authClient.signOut({
+              fetchOptions: {
+                onSuccess: () => {
+                  router.push("/");
+                },
+              },
+            });
+          }}
+        >
+          Logout
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
