@@ -9,7 +9,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import ProfileForm from "@/components/profile-form";
 import AccountForm from "@/components/account-form";
-import { Edit2, MapPin, Phone, Mail, Calendar, User, Ruler, Weight, Briefcase, Settings, UserCircle } from "lucide-react";
+import SkillsSection from "@/components/profile/SkillsSection";
+import GallerySection from "@/components/profile/GallerySection";
+import ExperienceSection from "@/components/profile/ExperienceSection";
+import EducationSection from "@/components/profile/EducationSection";
+import PortfolioSection from "@/components/profile/PortfolioSection";
+import { Edit2, MapPin, Phone, Mail, Calendar, User, Ruler, Weight, Briefcase, Settings, UserCircle, Image as ImageIcon, GraduationCap, FolderSearch, Star } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function MePage() {
     const [data, setData] = useState<any>(null);
@@ -240,69 +246,116 @@ export default function MePage() {
                                             </p>
                                         </div>
                                     )}
+
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
+                                        <div className="space-y-1">
+                                            <div className="flex items-center text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+                                                <Ruler className="mr-1 h-3 w-3" /> Height
+                                            </div>
+                                            <div className="text-sm font-medium">{profile?.heightCm ? `${profile.heightCm} cm` : "N/A"}</div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <div className="flex items-center text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+                                                <Weight className="mr-1 h-3 w-3" /> Weight
+                                            </div>
+                                            <div className="text-sm font-medium">{profile?.weightKg ? `${profile.weightKg} kg` : "N/A"}</div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <div className="flex items-center text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+                                                <Briefcase className="mr-1 h-3 w-3" /> Experience
+                                            </div>
+                                            <div className="text-sm font-medium">{profile?.yearsOfExperience ? `${profile.yearsOfExperience} yrs` : "N/A"}</div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Hair / Eyes</div>
+                                            <div className="text-sm font-medium">
+                                                {profile?.hairColor || "N/A"} / {profile?.eyeColor || "N/A"}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
 
-                        {/* Physical & Professional Stats */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Physical & Professional Details</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                                    <div className="space-y-1">
-                                        <div className="flex items-center text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-                                            <Ruler className="mr-1 h-3.0 w-3.0" /> Height
-                                        </div>
-                                        <div className="text-lg font-medium">{profile?.heightCm ? `${profile.heightCm} cm` : "N/A"}</div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-                                            <Weight className="mr-1 h-3.0 w-3.0" /> Weight
-                                        </div>
-                                        <div className="text-lg font-medium">{profile?.weightKg ? `${profile.weightKg} kg` : "N/A"}</div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-                                            <Briefcase className="mr-1 h-3.0 w-3.0" /> Experience
-                                        </div>
-                                        <div className="text-lg font-medium">{profile?.yearsOfExperience ? `${profile.yearsOfExperience} years` : "N/A"}</div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Hair / Eyes</div>
-                                        <div className="text-lg font-medium">
-                                            {profile?.hairColor || "N/A"} / {profile?.eyeColor || "N/A"}
-                                        </div>
-                                    </div>
+                        {/* Secondary Content Sections */}
+                        <div className="mt-4">
+                            <Tabs defaultValue="gallery" className="w-full">
+                                <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6">
+                                    <TabsTrigger value="gallery" className="data-[state=active]:border-primary border-b-2 border-transparent rounded-none px-2 py-4 bg-transparent text-sm font-medium transition-all shadow-none">
+                                        <ImageIcon className="mr-2 h-4 w-4" /> Gallery
+                                    </TabsTrigger>
+                                    <TabsTrigger value="skills" className="data-[state=active]:border-primary border-b-2 border-transparent rounded-none px-2 py-4 bg-transparent text-sm font-medium transition-all shadow-none">
+                                        <Star className="mr-2 h-4 w-4" /> Skills
+                                    </TabsTrigger>
+                                    <TabsTrigger value="experiences" className="data-[state=active]:border-primary border-b-2 border-transparent rounded-none px-2 py-4 bg-transparent text-sm font-medium transition-all shadow-none">
+                                        <Briefcase className="mr-2 h-4 w-4" /> Experiences
+                                    </TabsTrigger>
+                                    <TabsTrigger value="education" className="data-[state=active]:border-primary border-b-2 border-transparent rounded-none px-2 py-4 bg-transparent text-sm font-medium transition-all shadow-none">
+                                        <GraduationCap className="mr-2 h-4 w-4" /> Education
+                                    </TabsTrigger>
+                                    <TabsTrigger value="portfolio" className="data-[state=active]:border-primary border-b-2 border-transparent rounded-none px-2 py-4 bg-transparent text-sm font-medium transition-all shadow-none">
+                                        <FolderSearch className="mr-2 h-4 w-4" /> Portfolio
+                                    </TabsTrigger>
+                                </TabsList>
+                                <div className="mt-8">
+                                    <TabsContent value="gallery" className="mt-0">
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle>Photo Gallery</CardTitle>
+                                                <CardDescription>Manage your professional photos and headshots.</CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <GallerySection photos={profile?.galleryPhotos || []} onRefresh={fetchData} />
+                                            </CardContent>
+                                        </Card>
+                                    </TabsContent>
+                                    <TabsContent value="skills" className="mt-0">
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle>Skills & Talents</CardTitle>
+                                                <CardDescription>Add skills and talents to make yourself discoverable.</CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <SkillsSection initialSkills={profile?.skills || []} onRefresh={fetchData} />
+                                            </CardContent>
+                                        </Card>
+                                    </TabsContent>
+                                    <TabsContent value="experiences" className="mt-0">
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle>Work Experience</CardTitle>
+                                                <CardDescription>Your professional history in the industry.</CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <ExperienceSection experiences={profile?.experiences || []} onRefresh={fetchData} />
+                                            </CardContent>
+                                        </Card>
+                                    </TabsContent>
+                                    <TabsContent value="education" className="mt-0">
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle>Education & Training</CardTitle>
+                                                <CardDescription>Degrees, certificates, and relevant training.</CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <EducationSection educations={profile?.educations || []} onRefresh={fetchData} />
+                                            </CardContent>
+                                        </Card>
+                                    </TabsContent>
+                                    <TabsContent value="portfolio" className="mt-0">
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle>Portfolio & Projects</CardTitle>
+                                                <CardDescription>Showcase your best projects and external work links.</CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <PortfolioSection portfolios={profile?.portfolios || []} onRefresh={fetchData} />
+                                            </CardContent>
+                                        </Card>
+                                    </TabsContent>
                                 </div>
-
-                                {profile?.skinTone && (
-                                    <div className="mt-6 space-y-1">
-                                        <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Skin Tone</div>
-                                        <div className="text-lg font-medium">{profile.skinTone}</div>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-
-                        {/* Skills */}
-                        {profile?.skills && profile.skills.length > 0 && (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Skills</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex flex-wrap gap-2">
-                                        {profile.skills.map((s: any) => (
-                                            <Badge key={s.skill.id} variant="outline">
-                                                {s.skill.name}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        )}
+                            </Tabs>
+                        </div>
                     </>
                 )}
             </div>

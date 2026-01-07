@@ -17,11 +17,13 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>Welcome {session.user.name}</p>
-      <Dashboard session={session} />
-    </div>
-  );
+  return redirect("/me");
+
+  // return (
+  //   <div>
+  //     <h1>Dashboard</h1>
+  //     <p>Welcome {session.user.name}</p>
+  //     <Dashboard session={session} />
+  //   </div>
+  // );
 }
