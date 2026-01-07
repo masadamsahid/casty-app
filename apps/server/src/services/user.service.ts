@@ -18,15 +18,30 @@ export class UserService {
     async updateProfile(userId: string, data: any) {
         let profile = await profileRepository.findByUserId(userId);
 
+        const profileData: any = {
+            fullName: data.fullName || "",
+            description: data.description || null,
+            country: data.country || null,
+            heightCm: data.heightCm ? Number(data.heightCm) : null,
+            weightKg: data.weightKg ? Number(data.weightKg) : null,
+            yearsOfExperience: data.yearsOfExperience !== undefined && data.yearsOfExperience !== null ? Number(data.yearsOfExperience) : null,
+            hairColor: data.hairColor || null,
+            eyeColor: data.eyeColor || null,
+            skinTone: data.skinTone || null,
+            birthDate: data.birthDate && data.birthDate !== "" ? data.birthDate : null,
+            gender: data.gender || null,
+            phone: data.phone || null,
+            publicEmail: data.publicEmail || null,
+        };
+
         if (!profile) {
             profile = await profileRepository.create({
                 id: uuidv4(),
                 userId,
-                fullName: data.fullName || "",
-                ...data,
+                ...profileData,
             });
         } else {
-            profile = await profileRepository.update(profile.id, data);
+            profile = await profileRepository.update(profile.id, profileData);
         }
 
         return profile;

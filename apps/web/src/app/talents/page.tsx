@@ -48,7 +48,7 @@ export default function TalentsPage() {
                 }
             }
         });
-        router.push(`${pathname}?${params.toString()}`);
+        router.push(`${pathname}?${params.toString()}` as any);
     };
 
     const fetchTalents = async (currentFilters: TalentFilters) => {

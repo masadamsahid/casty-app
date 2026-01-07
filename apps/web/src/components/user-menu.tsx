@@ -49,7 +49,7 @@ export default function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push("/profile")}>
+          <DropdownMenuItem onClick={() => router.push("/me" as any)}>
             My Profile
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/applications")}>
