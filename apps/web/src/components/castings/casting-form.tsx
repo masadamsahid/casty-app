@@ -154,6 +154,7 @@ export default function CastingForm({ initialData, onSubmit, loading }: CastingF
     return (
         <Form {...(form as any)}>
             <form onSubmit={form.handleSubmit(handleSubmit as any)} className="space-y-6">
+                {/* Row 1: Title & Category */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                         control={form.control}
@@ -195,135 +196,7 @@ export default function CastingForm({ initialData, onSubmit, loading }: CastingF
                     />
                 </div>
 
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                                <Textarea
-                                    placeholder="Tell us about the role..."
-                                    className="min-h-[150px]"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                        control={form.control}
-                        name="location"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Location</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Jakarta, Remote, etc." {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="budget"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Budget</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Negotiable, $500/day, etc." {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <FormField
-                        control={form.control}
-                        name="heightCm"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Min Height (cm)</FormLabel>
-                                <FormControl>
-                                    <Input type="number" placeholder="170" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="deadline"
-                        render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                                <FormLabel className="mb-2">Deadline</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant={"outline"}
-                                                className={cn(
-                                                    "w-full pl-3 text-left font-normal",
-                                                    !field.value && "text-muted-foreground"
-                                                )}
-                                            >
-                                                {field.value ? (
-                                                    format(field.value, "PPP")
-                                                ) : (
-                                                    <span>Pick a date</span>
-                                                )}
-                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={field.value}
-                                            onSelect={field.onChange}
-                                            disabled={(date) =>
-                                                date < new Date(new Date().setHours(0, 0, 0, 0))
-                                            }
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="status"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Status</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Status" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="draft">Draft</SelectItem>
-                                        <SelectItem value="published">Published</SelectItem>
-                                        <SelectItem value="closed">Closed</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-
+                {/* Row 2: Post as Agency & Status */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                         control={form.control}
@@ -356,28 +229,94 @@ export default function CastingForm({ initialData, onSubmit, loading }: CastingF
 
                     <FormField
                         control={form.control}
-                        name="isCoverLetterRequired"
+                        name="status"
                         render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                                <FormControl>
-                                    <Checkbox
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                </FormControl>
-                                <div className="space-y-1 leading-none">
-                                    <FormLabel>
-                                        Require Cover Letter
-                                    </FormLabel>
-                                    <FormDescription>
-                                        Applicants must provide a cover letter.
-                                    </FormDescription>
-                                </div>
+                            <FormItem>
+                                <FormLabel>Status</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Status" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="draft">Draft</SelectItem>
+                                        <SelectItem value="published">Published</SelectItem>
+                                        <SelectItem value="closed">Closed</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
                 </div>
 
+                {/* Row 3: Location & Budget */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Location</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Jakarta, Remote, etc." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="budget"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Budget</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Negotiable, $500/day, etc." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                {/* Row 4: Description */}
+                <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    placeholder="Tell us about the role..."
+                                    className="min-h-[150px]"
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                {/* Row 5: Height */}
+                <FormField
+                    control={form.control}
+                    name="heightCm"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Min Height (cm)</FormLabel>
+                            <FormControl>
+                                <Input type="number" placeholder="170" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                {/* Row 6: Required Skills */}
                 <div className="space-y-4">
                     <FormLabel>Required Skills</FormLabel>
                     <div className="flex flex-wrap gap-2 mb-4">
@@ -448,6 +387,73 @@ export default function CastingForm({ initialData, onSubmit, loading }: CastingF
                         </PopoverContent>
                     </Popover>
                 </div>
+
+                {/* Row 7: Deadline */}
+                <FormField
+                    control={form.control}
+                    name="deadline"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                            <FormLabel className="mb-2">Deadline</FormLabel>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-full pl-3 text-left font-normal",
+                                                !field.value && "text-muted-foreground"
+                                            )}
+                                        >
+                                            {field.value ? (
+                                                format(field.value, "PPP")
+                                            ) : (
+                                                <span>Pick a date</span>
+                                            )}
+                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                    </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={field.value}
+                                        onSelect={field.onChange}
+                                        disabled={(date) =>
+                                            date < new Date(new Date().setHours(0, 0, 0, 0))
+                                        }
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                {/* Row 8: Require Cover Letter */}
+                <FormField
+                    control={form.control}
+                    name="isCoverLetterRequired"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                                <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                    Require Cover Letter
+                                </FormLabel>
+                                <FormDescription>
+                                    Applicants must provide a cover letter.
+                                </FormDescription>
+                            </div>
+                        </FormItem>
+                    )}
+                />
 
                 <div className="flex justify-end gap-4 pt-4 border-t">
                     <Button type="submit" disabled={loading}>

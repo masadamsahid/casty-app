@@ -4,16 +4,17 @@ import { eq, and, like, sql } from "drizzle-orm";
 export class CastingRepository {
     async findAll(filters: any) {
         const { title, agencyId, categoryId, status, managerId } = filters;
-        const conditions = [];
-
-        if (title) conditions.push(like(casting.title, `%${title}%`));
-        if (agencyId) conditions.push(eq(casting.agencyId, agencyId));
-        if (categoryId) conditions.push(eq(casting.categoryId, categoryId));
-        if (status) conditions.push(eq(casting.status, status));
-        if (managerId) conditions.push(eq(casting.managerId, managerId));
 
         return await db.query.casting.findMany({
-            where: conditions.length > 0 ? and(...conditions) : undefined,
+            where: (casting, { and, eq, like }) => {
+                const conditions = [];
+                if (title) conditions.push(like(casting.title, `%${title}%`));
+                if (agencyId) conditions.push(eq(casting.agencyId, agencyId));
+                if (categoryId) conditions.push(eq(casting.categoryId, categoryId));
+                if (status) conditions.push(eq(casting.status, status));
+                if (managerId) conditions.push(eq(casting.managerId, managerId));
+                return conditions.length > 0 ? and(...conditions) : undefined;
+            },
             with: {
                 agency: true,
                 category: true,
@@ -74,8 +75,8 @@ export class CastingRepository {
         return await db.insert(castingSkill).values({ castingId, skillId }).onConflictDoNothing().returning();
     }
 
-    async clearSkills(castingId: string) {
-        return await db.delete(castingSkill).where(eq(castingSkill.castingId, castingId));
+    async clearSkills(castingId: string): Promise<void> {
+        await db.delete(castingSkill).where(eq(castingSkill.castingId, castingId));
     }
 }
 

@@ -119,7 +119,7 @@ export default function CastingDetailPage() {
         );
     }
 
-    const isClosed = casting.status === "CLOSED" || (!!casting.deadline && new Date(casting.deadline) < new Date());
+    const isClosed = casting.status === "closed" || (!!casting.deadline && new Date(casting.deadline) < new Date());
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -133,13 +133,17 @@ export default function CastingDetailPage() {
                 <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                         <Badge variant="outline">{casting.category.name}</Badge>
+                        {casting.status === "draft" && (
+                            <Badge variant="outline" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/30">
+                                Draft
+                            </Badge>
+                        )}
                         {isClosed ? (
                             <Badge variant="destructive">Closed</Badge>
-                        ) : (
-                            <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Published</Badge>
-                        )}
-                        {casting.status === "DRAFT" && (
-                            <Badge variant="outline" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">Draft</Badge>
+                        ) : casting.status === "published" && (
+                            <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800/30">
+                                Published
+                            </Badge>
                         )}
                     </div>
                     <div className="flex items-start justify-between gap-4 mb-4">

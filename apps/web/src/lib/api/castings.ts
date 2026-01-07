@@ -29,7 +29,7 @@ export interface Casting {
     deadline?: string;
     budget?: string;
     isCoverLetterRequired: boolean;
-    status: "DRAFT" | "PUBLISHED" | "CLOSED";
+    status: "draft" | "published" | "closed";
     createdAt: string;
     updatedAt: string;
     managerId: string;
