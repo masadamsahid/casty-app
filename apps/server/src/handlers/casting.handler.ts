@@ -1,5 +1,6 @@
 import type { Context } from "hono";
 import { castingService } from "../services/casting.service";
+import { applicationService } from "../services/application.service";
 import { successResponse, errorResponse } from "../lib/response";
 
 export const getCastingsHandler = async (c: Context) => {
@@ -75,6 +76,17 @@ export const deleteCastingHandler = async (c: Context) => {
 export const getCategoriesHandler = async (c: Context) => {
     try {
         const data = await castingService.getCategories();
+        return successResponse(c, data);
+    } catch (error: any) {
+        return errorResponse(c, error.message);
+    }
+};
+
+export const getCastingApplicationsHandler = async (c: Context) => {
+    try {
+        const user = c.get("user");
+        const id = c.req.param("id");
+        const data = await applicationService.getApplicationsByCastingId(user.id, id);
         return successResponse(c, data);
     } catch (error: any) {
         return errorResponse(c, error.message);

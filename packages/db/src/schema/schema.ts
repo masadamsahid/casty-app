@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, boolean, integer, pgEnum, date, index, primaryKey } from "drizzle-orm/pg-core";
-import { user } from "./auth";
+import { user, session, account } from "./auth";
 import { relations } from "drizzle-orm";
 
 export const genderEnum = pgEnum("gender", ["male", "female", "other"]);
@@ -220,6 +220,16 @@ export const chatMessage = pgTable("chat_message", {
 });
 
 // Relations
+export const userRelations = relations(user, ({ many, one }) => ({
+    sessions: many(session),
+    accounts: many(account),
+    profile: one(profile),
+    agencies: many(agency),
+    agencyMemberships: many(agencyMember),
+    castings: many(casting),
+    applications: many(application),
+}));
+
 export const profileRelations = relations(profile, ({ one, many }) => ({
     user: one(user, { fields: [profile.userId], references: [user.id] }),
     skills: many(profileSkill),

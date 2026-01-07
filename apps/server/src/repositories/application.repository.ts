@@ -13,6 +13,21 @@ export class ApplicationRepository {
         });
     }
 
+    async findAllByCastingId(castingId: string) {
+        return await db.query.application.findMany({
+            where: eq(application.castingId, castingId),
+            with: {
+                talent: {
+                    with: {
+                        profile: true,
+                    }
+                },
+                agency: true,
+            },
+            orderBy: (a, { desc }) => [desc(a.createdAt)],
+        });
+    }
+
     async findById(id: string) {
         return await db.query.application.findFirst({
             where: eq(application.id, id),
@@ -24,7 +39,7 @@ export class ApplicationRepository {
                 },
                 talent: {
                     with: {
-                        // profiles: true, // Need to handle profile link if needed
+                        profile: true,
                     }
                 },
                 agency: true,

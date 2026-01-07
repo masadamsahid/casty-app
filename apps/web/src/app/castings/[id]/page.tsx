@@ -20,6 +20,10 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import CastingForm from "@/components/castings/casting-form";
+import ApplyModal from "@/components/applications/apply-modal";
+import { getCastingApplications, updateApplicationStatus, type Application } from "@/lib/api/applications";
+import { ChevronRight, MessageSquare, Check, X, Search } from "lucide-react";
+import Link from "next/link";
 
 export default function CastingDetailPage() {
     const params = useParams();
@@ -31,6 +35,9 @@ export default function CastingDetailPage() {
     const [user, setUser] = useState<any>(null);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [updating, setUpdating] = useState(false);
+    const [applyModalOpen, setApplyModalOpen] = useState(false);
+    const [applications, setApplications] = useState<Application[]>([]);
+    const [loadingApplications, setLoadingApplications] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,18 +70,49 @@ export default function CastingDetailPage() {
         }
     }, [id]);
 
+    const fetchApplications = async () => {
+        setLoadingApplications(true);
+        try {
+            const res = await getCastingApplications(id);
+            if (res.success) {
+                setApplications(res.data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch applications:", error);
+        } finally {
+            setLoadingApplications(false);
+        }
+    };
+
+    useEffect(() => {
+        if (casting && user?.user?.id === casting.managerId) {
+            fetchApplications();
+        }
+    }, [casting, user]);
+
     const handleApply = () => {
         if (!user) {
             toast.error("You must be logged in to apply");
-            router.push("/login"); // Assuming login route
+            router.push(`/login?callbackUrl=/castings/${id}`);
             return;
         }
         if (!user.user?.isTalent) {
             toast.error("Only talents can apply for castings");
             return;
         }
-        // TODO: Open application modal or navigate to application page
-        toast.info("Application feature coming soon!");
+        setApplyModalOpen(true);
+    };
+
+    const handleStatusUpdate = async (appId: string, status: Application["status"]) => {
+        try {
+            const res = await updateApplicationStatus(appId, status);
+            if (res.success) {
+                toast.success(`Application ${status} successfully`);
+                fetchApplications(); // Refresh list
+            }
+        } catch (error: any) {
+            toast.error("Failed to update status");
+        }
     };
 
     const handleUpdate = async (values: any) => {
@@ -293,6 +331,93 @@ export default function CastingDetailPage() {
                     </div>
                 </div>
             </div>
+            {/* Applications List (Manager Only) */}
+            {user?.user?.id === casting.managerId && (
+                <section className="mt-16">
+                    <Separator className="mb-8" />
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold">Applications ({applications.length})</h2>
+                    </div>
+
+                    {loadingApplications ? (
+                        <div className="space-y-4">
+                            {[1, 2, 3].map(i => (
+                                <Skeleton key={i} className="h-24 w-full rounded-xl" />
+                            ))}
+                        </div>
+                    ) : applications.length > 0 ? (
+                        <div className="grid gap-4">
+                            {applications.map((app) => (
+                                <div key={app.id} className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-card border rounded-xl hover:shadow-sm transition-shadow">
+                                    <div className="flex items-center gap-4 mb-4 md:mb-0">
+                                        <Avatar className="h-12 w-12 border">
+                                            <AvatarImage src={app.talent?.image} alt={app.talent?.name} />
+                                            <AvatarFallback>{app.talent?.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-bold">{app.talent?.profile?.fullName || app.talent?.name}</h3>
+                                                <Badge variant={
+                                                    app.status === "accepted" ? "success" :
+                                                        app.status === "rejected" ? "destructive" :
+                                                            app.status === "shortlisted" ? "secondary" : "outline"
+                                                } className="capitalize">
+                                                    {app.status}
+                                                </Badge>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">
+                                                Applied on {format(new Date(app.createdAt), "MMM d, yyyy")}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 w-full md:w-auto">
+                                        <Button variant="outline" size="sm" asChild className="flex-1 md:flex-none">
+                                            <Link href={`/applications/${app.id}` as any}>
+                                                <Info className="w-4 h-4 mr-2" />
+                                                Details
+                                            </Link>
+                                        </Button>
+                                        <Button variant="outline" size="sm" asChild className="flex-1 md:flex-none">
+                                            <Link href={`/applications/${app.id}?chat=true` as any}>
+                                                <MessageSquare className="w-4 h-4 mr-2" />
+                                                Chat
+                                            </Link>
+                                        </Button>
+                                        {app.status === "pending" && (
+                                            <>
+                                                <Button variant="secondary" size="sm" onClick={() => handleStatusUpdate(app.id, "shortlisted")}>
+                                                    Shortlist
+                                                </Button>
+                                                <Button variant="outline" size="sm" className="text-destructive hover:bg-destructive/10" onClick={() => handleStatusUpdate(app.id, "rejected")}>
+                                                    <X className="w-4 h-4" />
+                                                </Button>
+                                            </>
+                                        )}
+                                        {app.status === "shortlisted" && (
+                                            <Button variant="default" size="sm" onClick={() => handleStatusUpdate(app.id, "accepted")}>
+                                                Accept
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12 bg-muted/20 border border-dashed rounded-2xl">
+                            <p className="text-muted-foreground text-sm">No applications received yet.</p>
+                        </div>
+                    )}
+                </section>
+            )}
+
+            <ApplyModal
+                castingId={casting.id}
+                castingTitle={casting.title}
+                isCoverLetterRequired={casting.isCoverLetterRequired}
+                open={applyModalOpen}
+                onOpenChange={setApplyModalOpen}
+            />
         </div>
     );
 }

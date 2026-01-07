@@ -1,4 +1,5 @@
 import { applicationRepository } from "../repositories/application.repository";
+import { castingRepository } from "../repositories/casting.repository";
 import { v4 as uuidv4 } from "uuid";
 
 export class ApplicationService {
@@ -10,6 +11,17 @@ export class ApplicationService {
         const result = await applicationRepository.findById(id);
         if (!result) throw new Error("Application not found");
         return result;
+    }
+
+    async getApplicationsByCastingId(managerId: string, castingId: string) {
+        const casting = await castingRepository.findById(castingId);
+        if (!casting) throw new Error("Casting not found");
+
+        if (casting.managerId !== managerId) {
+            throw new Error("Unauthorized to view applications");
+        }
+
+        return await applicationRepository.findAllByCastingId(castingId);
     }
 
     async applyToCasting(userId: string, data: any) {
