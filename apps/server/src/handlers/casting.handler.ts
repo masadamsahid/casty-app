@@ -5,9 +5,29 @@ import { successResponse, errorResponse } from "../lib/response";
 
 export const getCastingsHandler = async (c: Context) => {
     try {
-        const filters = c.req.query();
+        const query = c.req.query();
+        const queries = c.req.queries();
+
+        const filters: any = { ...query };
+
+        // Handle array parameters
+        if (queries["skillIds[]"]) {
+            filters.skillIds = queries["skillIds[]"];
+        } else if (queries["skillIds"]) {
+            filters.skillIds = queries["skillIds"];
+        }
+
+        // Parse numeric values
+        if (filters.limit) filters.limit = Number(filters.limit);
+        if (filters.offset) filters.offset = Number(filters.offset);
+        if (filters.minBudget) filters.minBudget = Number(filters.minBudget);
+        if (filters.maxBudget) filters.maxBudget = Number(filters.maxBudget);
+
         // Enforce published status for public listing unless otherwise specified
-        const data = await castingService.getCastings({ ...filters, status: filters.status || "published" });
+        const data = await castingService.getCastings({
+            ...filters,
+            status: filters.status || "published"
+        });
         return successResponse(c, data);
     } catch (error: any) {
         return errorResponse(c, error.message);
