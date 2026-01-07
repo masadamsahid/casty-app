@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import ProfileForm from "@/components/profile-form";
 import AccountForm from "@/components/account-form";
+import AvatarUpload from "@/components/profile/AvatarUpload";
 import SkillsSection from "@/components/profile/SkillsSection";
 import GallerySection from "@/components/profile/GallerySection";
 import ExperienceSection from "@/components/profile/ExperienceSection";
@@ -161,28 +162,37 @@ export default function MePage() {
                                 )}
                             </CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-1">
-                                        <p className="text-sm font-medium text-muted-foreground">Display Name</p>
-                                        <p className="text-lg font-medium">{user.name}</p>
+                                <div className="flex flex-col md:flex-row gap-8">
+                                    <div className="shrink-0">
+                                        <AvatarUpload
+                                            currentImage={user.image}
+                                            userName={user.name}
+                                            onSuccess={fetchData}
+                                        />
                                     </div>
-                                    <div className="space-y-1">
-                                        <p className="text-sm font-medium text-muted-foreground">Username</p>
-                                        <p className="text-lg font-medium">@{user.username || "not_set"}</p>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="text-sm font-medium text-muted-foreground">Email Address</p>
-                                        <div className="flex items-center gap-2 text-lg font-medium">
-                                            <Mail className="h-4 w-4 text-muted-foreground" />
-                                            {user.email}
+                                    <div className="grow grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-medium text-muted-foreground">Display Name</p>
+                                            <p className="text-lg font-medium">{user.name}</p>
                                         </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="text-sm font-medium text-muted-foreground">Account Status</p>
-                                        <div className="flex items-center gap-2">
-                                            <Badge variant={user.isTalent ? "default" : "outline"}>
-                                                {user.isTalent ? "Talent Account" : "Standard Account"}
-                                            </Badge>
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-medium text-muted-foreground">Username</p>
+                                            <p className="text-lg font-medium">@{user.username || "not_set"}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-medium text-muted-foreground">Email Address</p>
+                                            <div className="flex items-center gap-2 text-lg font-medium">
+                                                <Mail className="h-4 w-4 text-muted-foreground" />
+                                                {user.email}
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-medium text-muted-foreground">Account Status</p>
+                                            <div className="flex items-center gap-2">
+                                                <Badge variant={user.isTalent ? "default" : "outline"}>
+                                                    {user.isTalent ? "Talent Account" : "Standard Account"}
+                                                </Badge>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

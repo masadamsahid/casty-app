@@ -14,6 +14,7 @@ import { authClient } from "@/lib/auth-client";
 
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export default function UserMenu() {
   const router = useRouter();
@@ -34,8 +35,18 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
-          {session.user.name}
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={session.user.image || undefined} alt={session.user.name} className="object-cover" />
+            <AvatarFallback className="bg-primary/5 text-primary text-[10px]">
+              {session.user.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()
+                .substring(0, 2)}
+            </AvatarFallback>
+          </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
