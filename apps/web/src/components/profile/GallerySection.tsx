@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, X, Star, Loader2 } from "lucide-react";
 import { addGalleryPhoto, deleteGalleryPhoto, setMainGalleryPhoto } from "@/lib/api/user";
+import { uploadFile } from "@/lib/api/upload";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useRef } from "react";
 
 interface GallerySectionProps {
     photos: any[];
@@ -15,19 +17,39 @@ interface GallerySectionProps {
 }
 
 export default function GallerySection({ photos, onRefresh }: GallerySectionProps) {
-    const [newPhotoUrl, setNewPhotoUrl] = useState("");
     const [isAdding, setIsAdding] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleAdd = async () => {
-        if (!newPhotoUrl.trim()) return;
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        // Basic validation
+        if (!file.type.startsWith("image/")) {
+            toast.error("Please upload an image file");
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) { // 10MB limit for gallery
+            toast.error("Image size should be less than 10MB");
+            return;
+        }
+
         try {
             setIsAdding(true);
-            await addGalleryPhoto({ url: newPhotoUrl.trim() });
-            setNewPhotoUrl("");
+            const uploadRes = await uploadFile(file, "gallery");
+            const imageUrl = uploadRes.data.url;
+
+            await addGalleryPhoto({ url: imageUrl });
             onRefresh();
-            toast.success("Photo added");
+            toast.success("Photo added to gallery");
+
+            // Clear input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
         } catch (error: any) {
-            toast.error("Failed to add photo");
+            toast.error(error.response?.data?.error?.message || "Failed to add photo");
         } finally {
             setIsAdding(false);
         }
@@ -55,17 +77,30 @@ export default function GallerySection({ photos, onRefresh }: GallerySectionProp
 
     return (
         <div className="space-y-6">
-            <div className="flex gap-2">
-                <Input
-                    placeholder="Enter image URL"
-                    value={newPhotoUrl}
-                    onChange={(e) => setNewPhotoUrl(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-                />
-                <Button onClick={handleAdd} disabled={isAdding || !newPhotoUrl.trim()}>
-                    {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                    <span className="ml-2 hidden sm:inline">Add Photo</span>
-                </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-sm text-muted-foreground">
+                    Upload photos to showcase your work and personality.
+                </p>
+                <div className="relative">
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        accept="image/*"
+                        className="hidden"
+                    />
+                    <Button
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isAdding}
+                    >
+                        {isAdding ? (
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        ) : (
+                            <Plus className="h-4 w-4 mr-2" />
+                        )}
+                        Upload Photo
+                    </Button>
+                </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">

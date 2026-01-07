@@ -15,7 +15,8 @@ import GallerySection from "@/components/profile/GallerySection";
 import ExperienceSection from "@/components/profile/ExperienceSection";
 import EducationSection from "@/components/profile/EducationSection";
 import PortfolioSection from "@/components/profile/PortfolioSection";
-import { Edit2, MapPin, Phone, Mail, Calendar, User, Ruler, Weight, Briefcase, Settings, UserCircle, Image as ImageIcon, GraduationCap, FolderSearch, Star } from "lucide-react";
+import Link from "next/link";
+import { Edit2, MapPin, Phone, Mail, Calendar, User, Ruler, Weight, Briefcase, Settings, UserCircle, Image as ImageIcon, GraduationCap, FolderSearch, Star, ExternalLink } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function MePage() {
@@ -90,18 +91,28 @@ export default function MePage() {
                     <h1 className="text-3xl font-bold tracking-tight">My Profile</h1>
                     <p className="text-muted-foreground">Manage your personal and professional profile information.</p>
                 </div>
-                <Button
-                    variant={isEditing ? "outline" : "default"}
-                    onClick={() => setIsEditing(!isEditing)}
-                    className="w-full md:w-auto"
-                >
-                    {isEditing ? "Cancel" : (
-                        <>
-                            <Edit2 className="mr-2 h-4 w-4" />
-                            Edit Profile
-                        </>
+                <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                    {!isEditing && profile && (
+                        <Link href={`/talents/${profile.id}`} passHref target="_blank">
+                            <Button variant="outline" className="w-full sm:w-auto">
+                                <ExternalLink className="mr-2 h-4 w-4" />
+                                View Public Profile
+                            </Button>
+                        </Link>
                     )}
-                </Button>
+                    <Button
+                        variant={isEditing ? "outline" : "default"}
+                        onClick={() => setIsEditing(!isEditing)}
+                        className="w-full sm:w-auto"
+                    >
+                        {isEditing ? "Cancel" : (
+                            <>
+                                <Edit2 className="mr-2 h-4 w-4" />
+                                Edit Profile
+                            </>
+                        )}
+                    </Button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 gap-8">
