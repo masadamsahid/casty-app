@@ -10,6 +10,7 @@ import castingRoutes from "./routes/casting.routes";
 import applicationRoutes from "./routes/application.routes";
 import chatRoutes from "./routes/chat.routes";
 import uploadRoutes from "./routes/upload.routes";
+import talentRoutes from "./routes/talent.routes";
 import { errorHandler } from "./middleware/error-handler";
 
 const app = new Hono();
@@ -35,6 +36,7 @@ app.route("/api/castings", castingRoutes);
 app.route("/api/applications", applicationRoutes);
 app.route("/api/chat", chatRoutes);
 app.route("/api/upload", uploadRoutes);
+app.route("/api/talents", talentRoutes);
 
 app.get("/", (c) => {
   return c.text("OK");
