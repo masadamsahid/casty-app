@@ -41,3 +41,8 @@ export const getTalentById = async (id: string) => {
     const response = await axiosClient.get(`/talents/${id}`);
     return response.data;
 };
+
+export const searchSkills = async (query: string) => {
+    const response = await axiosClient.get(`/skills/search?q=${query}`);
+    return response.data;
+};

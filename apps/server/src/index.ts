@@ -11,6 +11,7 @@ import applicationRoutes from "./routes/application.routes";
 import chatRoutes from "./routes/chat.routes";
 import uploadRoutes from "./routes/upload.routes";
 import talentRoutes from "./routes/talent.routes";
+import skillRoutes from "./routes/skill.routes";
 import { errorHandler } from "./middleware/error-handler";
 
 const app = new Hono();
@@ -37,6 +38,7 @@ app.route("/api/applications", applicationRoutes);
 app.route("/api/chat", chatRoutes);
 app.route("/api/upload", uploadRoutes);
 app.route("/api/talents", talentRoutes);
+app.route("/api/skills", skillRoutes);
 
 app.get("/", (c) => {
   return c.text("OK");

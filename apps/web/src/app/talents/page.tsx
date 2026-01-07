@@ -1,17 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getTalents, TalentFilters } from "@/lib/api/talents";
+import { useEffect, useState, useMemo } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { getTalents, type TalentFilters } from "@/lib/api/talents";
 import TalentCard from "@/components/talents/talent-card";
 import TalentFiltersComponent from "@/components/talents/talent-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function TalentsPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+
     const [talents, setTalents] = useState<any[]>([]);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [filters, setFilters] = useState<TalentFilters>({ limit: 12, offset: 0 });
+
+    const initialFiltersFromUrl = useMemo(() => {
+        const filters: TalentFilters = { limit: 12, offset: 0 };
+        searchParams.forEach((value, key) => {
+            const cleanKey = key.replace("[]", "");
+            if (cleanKey === "skillIds") {
+                filters.skillIds = filters.skillIds || [];
+                if (!filters.skillIds.includes(value)) {
+                    filters.skillIds.push(value);
+                }
+            } else if (key === "limit" || key === "offset" || key.includes("min") || key.includes("max") || key === "age" || key === "experience") {
+                (filters as any)[cleanKey] = Number(value);
+            } else {
+                (filters as any)[cleanKey] = value;
+            }
+        });
+        return filters;
+    }, [searchParams]);
+
+    const [filters, setFilters] = useState<TalentFilters>(initialFiltersFromUrl);
+
+    const updateUrl = (newFilters: TalentFilters) => {
+        const params = new URLSearchParams();
+        Object.entries(newFilters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== "") {
+                if (Array.isArray(value)) {
+                    value.forEach((v) => params.append(`${key}[]`, v));
+                } else {
+                    params.append(key, value.toString());
+                }
+            }
+        });
+        router.push(`${pathname}?${params.toString()}`);
+    };
 
     const fetchTalents = async (currentFilters: TalentFilters) => {
         setLoading(true);
@@ -32,12 +70,20 @@ export default function TalentsPage() {
         fetchTalents(filters);
     }, [filters]);
 
+    useEffect(() => {
+        setFilters(initialFiltersFromUrl);
+    }, [initialFiltersFromUrl]);
+
     const handleFilterChange = (newFilters: TalentFilters) => {
-        setFilters({ ...newFilters, limit: 12, offset: 0 });
+        const updated = { ...newFilters, limit: 12, offset: 0 };
+        setFilters(updated);
+        updateUrl(updated);
     };
 
     const handlePageChange = (offset: number) => {
-        setFilters((prev) => ({ ...prev, offset }));
+        const updated = { ...filters, offset };
+        setFilters(updated);
+        updateUrl(updated);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
@@ -66,7 +112,7 @@ export default function TalentsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {Array.from({ length: 8 }).map((_, i) => (
                         <div key={i} className="space-y-4">
-                            <Skeleton className="aspect-[3/4] w-full rounded-xl" />
+                            <Skeleton className="aspect-3/4 w-full rounded-xl" />
                             <Skeleton className="h-4 w-3/4" />
                             <Skeleton className="h-4 w-1/2" />
                         </div>
@@ -96,7 +142,6 @@ export default function TalentsPage() {
                                     </PaginationItem>
                                     {Array.from({ length: totalPages }).map((_, i) => {
                                         const page = i + 1;
-                                        // Show only first, last, and pages around current
                                         if (page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) {
                                             return (
                                                 <PaginationItem key={page}>

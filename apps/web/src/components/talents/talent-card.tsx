@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star } from "lucide-react";
 
@@ -12,6 +11,9 @@ interface TalentCardProps {
         fullName: string;
         country?: string | null;
         gender?: string | null;
+        birthDate?: string | null;
+        heightCm?: number | null;
+        weightKg?: number | null;
         yearsOfExperience?: number | null;
         skills?: { skill: { name: string } }[];
         galleryPhotos?: { url: string }[];
@@ -22,6 +24,20 @@ interface TalentCardProps {
 export default function TalentCard({ talent }: TalentCardProps) {
     const mainPhoto = talent.galleryPhotos?.[0]?.url || talent.user?.image;
     const topSkills = talent.skills?.slice(0, 3).map((s) => s.skill.name) || [];
+
+    const calculateAge = (birthDate?: string | null) => {
+        if (!birthDate) return null;
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age;
+    };
+
+    const age = calculateAge(talent.birthDate);
 
     return (
         <Link href={`/talents/${talent.id}`}>
@@ -45,8 +61,10 @@ export default function TalentCard({ talent }: TalentCardProps) {
                     </div>
                 </div>
                 <CardContent className="p-4">
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                        <h3 className="font-bold text-lg truncate">{talent.fullName}</h3>
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                        <h3 className="font-bold text-lg truncate">
+                            {talent.fullName} {age !== null && <span className="text-muted-foreground font-normal">({age})</span>}
+                        </h3>
                         {talent.yearsOfExperience !== null && (
                             <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
                                 <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
@@ -54,10 +72,21 @@ export default function TalentCard({ talent }: TalentCardProps) {
                             </div>
                         )}
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
-                        <MapPin className="w-3 h-3" />
-                        {talent.country || "Unknown Location"}
+
+                    <div className="flex flex-col gap-1.5 mb-4">
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <MapPin className="w-3 h-3" />
+                            {talent.country || "Unknown Location"}
+                        </div>
+                        {(talent.heightCm || talent.weightKg) && (
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+                                {talent.heightCm && <span>{talent.heightCm} cm</span>}
+                                {talent.heightCm && talent.weightKg && <span className="text-muted-foreground/30">•</span>}
+                                {talent.weightKg && <span>{talent.weightKg} kg</span>}
+                            </div>
+                        )}
                     </div>
+
                     <div className="flex flex-wrap gap-1">
                         {topSkills.map((skill) => (
                             <Badge key={skill} variant="outline" className="text-[10px] px-1.5 py-0">

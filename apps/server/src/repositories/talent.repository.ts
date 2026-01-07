@@ -1,5 +1,5 @@
 import { db, profile, user, profileSkill } from "@casty-app/db";
-import { eq, and, like, sql, inArray, gte, lte } from "drizzle-orm";
+import { eq, and, like, ilike, sql, inArray, gte, lte } from "drizzle-orm";
 
 export interface TalentFilters {
     name?: string;
@@ -47,8 +47,8 @@ export class TalentRepository {
         // Flag to only show users who are talents
         conditions.push(eq(user.isTalent, true));
 
-        if (name) conditions.push(like(profile.fullName, `%${name}%`));
-        if (country) conditions.push(eq(profile.country, country));
+        if (name) conditions.push(ilike(profile.fullName, `%${name}%`));
+        if (country) conditions.push(ilike(profile.country, `%${country}%`));
         if (gender) conditions.push(eq(profile.gender, gender));
         if (minHeight) conditions.push(gte(profile.heightCm, minHeight));
         if (maxHeight) conditions.push(lte(profile.heightCm, maxHeight));
@@ -61,7 +61,10 @@ export class TalentRepository {
             const profileIdsBySkill = await db
                 .select({ profileId: profileSkill.profileId })
                 .from(profileSkill)
-                .where(inArray(profileSkill.skillId, skillIds));
+                .where(inArray(profileSkill.skillId, skillIds))
+                .groupBy(profileSkill.profileId)
+                .having(sql`count(${profileSkill.skillId}) = ${skillIds.length}`);
+
             if (profileIdsBySkill.length === 0) return { data: [], total: 0 };
             conditions.push(inArray(profile.id, profileIdsBySkill.map(p => p.profileId)));
         }

@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { TalentFilters } from "@/lib/api/talents";
+import type { TalentFilters } from "@/lib/api/talents";
+import SkillSearchInput from "./skill-search-input";
 
 interface TalentFiltersProps {
+    // ...
     onFilterChange: (filters: TalentFilters) => void;
     initialFilters?: TalentFilters;
 }
@@ -68,6 +70,7 @@ export default function TalentFiltersComponent({ onFilterChange, initialFilters 
                         <SelectItem value="newest">Newest</SelectItem>
                         <SelectItem value="age">Age</SelectItem>
                         <SelectItem value="height">Height</SelectItem>
+                        <SelectItem value="weight">Weight</SelectItem>
                         <SelectItem value="experience">Experience</SelectItem>
                     </SelectContent>
                 </Select>
@@ -81,61 +84,86 @@ export default function TalentFiltersComponent({ onFilterChange, initialFilters 
             </div>
 
             {isExpanded && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t-2 border-dashed">
-                    <div className="space-y-2">
-                        <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Height (cm)</label>
-                        <div className="flex gap-2">
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t-2 border-dashed">
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Height (cm)</label>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="number"
+                                    placeholder="Min"
+                                    value={filters.minHeight || ""}
+                                    onChange={(e) => updateFilter("minHeight", e.target.value ? Number(e.target.value) : undefined)}
+                                />
+                                <Input
+                                    type="number"
+                                    placeholder="Max"
+                                    value={filters.maxHeight || ""}
+                                    onChange={(e) => updateFilter("maxHeight", e.target.value ? Number(e.target.value) : undefined)}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Weight (kg)</label>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="number"
+                                    placeholder="Min"
+                                    value={filters.minWeight || ""}
+                                    onChange={(e) => updateFilter("minWeight", e.target.value ? Number(e.target.value) : undefined)}
+                                />
+                                <Input
+                                    type="number"
+                                    placeholder="Max"
+                                    value={filters.maxWeight || ""}
+                                    onChange={(e) => updateFilter("maxWeight", e.target.value ? Number(e.target.value) : undefined)}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Age</label>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="number"
+                                    placeholder="Min"
+                                    value={filters.minAge || ""}
+                                    onChange={(e) => updateFilter("minAge", e.target.value ? Number(e.target.value) : undefined)}
+                                />
+                                <Input
+                                    type="number"
+                                    placeholder="Max"
+                                    value={filters.maxAge || ""}
+                                    onChange={(e) => updateFilter("maxAge", e.target.value ? Number(e.target.value) : undefined)}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Experience (yrs)</label>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="number"
+                                    placeholder="Min"
+                                    value={filters.minExperience || ""}
+                                    onChange={(e) => updateFilter("minExperience", e.target.value ? Number(e.target.value) : undefined)}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Country</label>
                             <Input
-                                type="number"
-                                placeholder="Min"
-                                value={filters.minHeight || ""}
-                                onChange={(e) => updateFilter("minHeight", e.target.value ? Number(e.target.value) : undefined)}
-                            />
-                            <Input
-                                type="number"
-                                placeholder="Max"
-                                value={filters.maxHeight || ""}
-                                onChange={(e) => updateFilter("maxHeight", e.target.value ? Number(e.target.value) : undefined)}
+                                placeholder="Country name..."
+                                value={filters.country || ""}
+                                onChange={(e) => updateFilter("country", e.target.value)}
                             />
                         </div>
                     </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Age</label>
-                        <div className="flex gap-2">
-                            <Input
-                                type="number"
-                                placeholder="Min"
-                                value={filters.minAge || ""}
-                                onChange={(e) => updateFilter("minAge", e.target.value ? Number(e.target.value) : undefined)}
-                            />
-                            <Input
-                                type="number"
-                                placeholder="Max"
-                                value={filters.maxAge || ""}
-                                onChange={(e) => updateFilter("maxAge", e.target.value ? Number(e.target.value) : undefined)}
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Experience (yrs)</label>
-                        <div className="flex gap-2">
-                            <Input
-                                type="number"
-                                placeholder="Min"
-                                value={filters.minExperience || ""}
-                                onChange={(e) => updateFilter("minExperience", e.target.value ? Number(e.target.value) : undefined)}
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Country</label>
-                        <Input
-                            placeholder="Country name..."
-                            value={filters.country || ""}
-                            onChange={(e) => updateFilter("country", e.target.value)}
+                    <div className="pt-4 border-t-2 border-dashed">
+                        <SkillSearchInput
+                            selectedSkillIds={filters.skillIds || []}
+                            onChange={(skillIds: string[]) => updateFilter("skillIds", skillIds)}
                         />
                     </div>
-                </div>
+                </>
             )}
         </div>
     );
