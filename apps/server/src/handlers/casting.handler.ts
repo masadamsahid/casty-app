@@ -5,7 +5,23 @@ import { successResponse, errorResponse } from "../lib/response";
 export const getCastingsHandler = async (c: Context) => {
     try {
         const filters = c.req.query();
-        const data = await castingService.getCastings(filters);
+        // Enforce published status for public listing unless otherwise specified
+        const data = await castingService.getCastings({ ...filters, status: filters.status || "published" });
+        return successResponse(c, data);
+    } catch (error: any) {
+        return errorResponse(c, error.message);
+    }
+};
+
+export const getMyCastingsHandler = async (c: Context) => {
+    try {
+        const user = c.get("user");
+        const filters = c.req.query();
+
+        console.log("My ID", user.id);
+
+        // Force managerId to be the current user
+        const data = await castingService.getCastings({ ...filters, managerId: user.id });
         return successResponse(c, data);
     } catch (error: any) {
         return errorResponse(c, error.message);

@@ -66,7 +66,7 @@ export default function UserMenu() {
           <DropdownMenuItem onClick={() => router.push("/applications")}>
             My Applications
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/my-castings")}>
+          <DropdownMenuItem onClick={() => router.push("/my-casting-posts")}>
             My Casting Posts
           </DropdownMenuItem>
         </DropdownMenuGroup>
