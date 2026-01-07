@@ -44,4 +44,7 @@ app.get("/", (c) => {
   return c.text("OK");
 });
 
-export default app;
+export default {
+  port: env.PORT,
+  fetch: app.fetch,
+};

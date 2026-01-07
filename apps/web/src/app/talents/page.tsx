@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { getTalents, type TalentFilters } from "@/lib/api/talents";
 import TalentCard from "@/components/talents/talent-card";
@@ -8,7 +8,7 @@ import TalentFiltersComponent from "@/components/talents/talent-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
-export default function TalentsPage() {
+function TalentsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -185,5 +185,25 @@ export default function TalentsPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function TalentsPage() {
+    return (
+        <Suspense fallback={
+            <div className="container mx-auto px-4 py-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                        <div key={i} className="space-y-4">
+                            <Skeleton className="aspect-3/4 w-full rounded-xl" />
+                            <Skeleton className="h-4 w-3/4" />
+                            <Skeleton className="h-4 w-1/2" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        }>
+            <TalentsContent />
+        </Suspense>
     );
 }

@@ -15,6 +15,7 @@ export const env = createEnv({
     GCS_PRIVATE_KEY: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
+    PORT: z.string().optional().default("8000"),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

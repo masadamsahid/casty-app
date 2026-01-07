@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { getCastings, type CastingFilters, type Casting } from "@/lib/api/castings";
 import { Search } from "lucide-react";
@@ -9,7 +9,7 @@ import CastingFiltersComponent from "@/components/castings/casting-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
-export default function CastingsPage() {
+function CastingsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -200,5 +200,25 @@ export default function CastingsPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function CastingsPage() {
+    return (
+        <Suspense fallback={
+            <div className="container mx-auto px-4 py-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                        <div key={i} className="space-y-4">
+                            <Skeleton className="h-[200px] w-full rounded-xl" />
+                            <Skeleton className="h-4 w-3/4" />
+                            <Skeleton className="h-4 w-1/2" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        }>
+            <CastingsContent />
+        </Suspense>
     );
 }
