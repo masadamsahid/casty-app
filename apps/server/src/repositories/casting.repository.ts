@@ -1,5 +1,5 @@
 import { db, casting, castingSkill, castingCategory } from "@casty-app/db";
-import { eq, and, like, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export class CastingRepository {
     async findAll(filters: any) {

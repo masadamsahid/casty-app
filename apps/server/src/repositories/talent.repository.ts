@@ -1,5 +1,5 @@
 import { db, profile, user, profileSkill } from "@casty-app/db";
-import { eq, and, like, ilike, sql, inArray, gte, lte } from "drizzle-orm";
+import { eq, and, ilike, sql, inArray, gte, lte } from "drizzle-orm";
 
 export interface TalentFilters {
     name?: string;
