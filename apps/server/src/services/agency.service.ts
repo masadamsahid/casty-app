@@ -1,13 +1,22 @@
 import { agencyRepository } from "../repositories/agency.repository";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, validate as isValidUUID } from "uuid";
 
 export class AgencyService {
     async getAllAgencies() {
         return await agencyRepository.findAll();
     }
 
-    async getAgencyById(id: string) {
-        const result = await agencyRepository.findById(id);
+    async getAgencyById(idOrSlug: string) {
+        let result;
+
+        if (isValidUUID(idOrSlug)) {
+            result = await agencyRepository.findById(idOrSlug);
+        }
+
+        if (!result) {
+            result = await agencyRepository.findBySlug(idOrSlug);
+        }
+
         if (!result) throw new Error("Agency not found");
         return result;
     }

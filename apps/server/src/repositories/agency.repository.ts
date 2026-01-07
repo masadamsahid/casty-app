@@ -14,7 +14,12 @@ export class AgencyRepository {
         return await db.query.agency.findFirst({
             where: eq(agency.slug, slug),
             with: {
-                members: true,
+                members: {
+                    with: {
+                        user: true,
+                    }
+                },
+                castings: true,
             }
         });
     }

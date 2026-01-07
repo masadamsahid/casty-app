@@ -277,7 +277,7 @@ For the detailed features, we can follow the below features:
 - create agency feature (click create button, then the modal form opens)
 
 
-4. Agency detail page (/agencies/:id)
+4. Agency detail page (/agencies/:slug)
 - displays the name, description, logo,
 - displays the members (owner, admins, talents)
 - displays the published castings
