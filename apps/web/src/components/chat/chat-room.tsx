@@ -42,11 +42,6 @@ export default function ChatRoom({ roomId, currentUserId }: ChatRoomProps) {
         return () => clearInterval(interval);
     }, [roomId]);
 
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [messages]);
 
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -66,6 +61,15 @@ export default function ChatRoom({ roomId, currentUserId }: ChatRoomProps) {
         }
     };
 
+    const getInitials = (name?: string) => {
+        if (!name) return "??";
+        const parts = name.split(" ");
+        if (parts.length > 1) {
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+        return name.substring(0, 2).toUpperCase();
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-[500px]">
@@ -75,35 +79,40 @@ export default function ChatRoom({ roomId, currentUserId }: ChatRoomProps) {
     }
 
     return (
-        <div className="flex flex-col h-[600px] border rounded-2xl bg-muted/5">
-            <div className="p-4 border-b bg-card rounded-t-2xl">
+        <div className="flex flex-col h-[600px] max-h-[600px] border rounded-2xl bg-muted/5 overflow-hidden">
+            <div className="p-4 border-b bg-card rounded-t-2xl shrink-0">
                 <h3 className="font-semibold flex items-center gap-2">
                     <MessageSquareIcon className="w-4 h-4" />
                     Messages
                 </h3>
             </div>
 
-            <ScrollArea className="flex-1 p-4">
-                <div className="space-y-4">
+            <ScrollArea className="flex-1 overflow-y-auto">
+                <div className="p-4 space-y-4">
                     {messages.length > 0 ? (
                         messages.map((msg) => (
                             <div
                                 key={msg.id}
                                 className={`flex ${msg.senderId === currentUserId ? "justify-end" : "justify-start"}`}
                             >
-                                <div className={`flex items-end gap-2 max-w-[80%] ${msg.senderId === currentUserId ? "flex-row-reverse" : "flex-row"}`}>
-                                    <Avatar className="h-8 w-8 mb-1 border shrink-0">
+                                <div className={`flex items-end gap-2 max-w-[85%] ${msg.senderId === currentUserId ? "flex-row-reverse" : "flex-row"}`}>
+                                    <Avatar className="h-8 w-8 mb-1 border shrink-0 shadow-sm">
                                         <AvatarImage src={msg.sender?.image} alt={msg.sender?.name} />
-                                        <AvatarFallback>{msg.sender?.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                        <AvatarFallback>{getInitials(msg.sender?.name)}</AvatarFallback>
                                     </Avatar>
-                                    <div className="flex flex-col">
-                                        <div className={`px-4 py-2 rounded-2xl text-sm ${msg.senderId === currentUserId
-                                                ? "bg-primary text-primary-foreground rounded-br-none"
-                                                : "bg-muted rounded-bl-none"
+                                    <div className={`flex flex-col ${msg.senderId === currentUserId ? "items-end" : "items-start"}`}>
+                                        {msg.senderId !== currentUserId && (
+                                            <span className="text-[10px] font-semibold text-muted-foreground mb-1 ml-1 px-1">
+                                                {msg.sender?.name}
+                                            </span>
+                                        )}
+                                        <div className={`px-4 py-2 rounded-2xl text-sm shadow-sm ${msg.senderId === currentUserId
+                                            ? "bg-primary text-primary-foreground rounded-br-none"
+                                            : "bg-background border border-border/50 rounded-bl-none"
                                             }`}>
                                             {msg.content}
                                         </div>
-                                        <span className="text-[10px] text-muted-foreground mt-1 px-1">
+                                        <span className="text-[10px] text-muted-foreground mt-1 px-1 opacity-70">
                                             {format(new Date(msg.createdAt), "HH:mm")}
                                         </span>
                                     </div>
@@ -119,7 +128,7 @@ export default function ChatRoom({ roomId, currentUserId }: ChatRoomProps) {
                 </div>
             </ScrollArea>
 
-            <div className="p-4 border-t bg-card rounded-b-2xl">
+            <div className="p-4 border-t bg-card rounded-b-2xl shrink-0">
                 <form onSubmit={handleSend} className="flex gap-2">
                     <Input
                         placeholder="Type a message..."

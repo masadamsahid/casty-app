@@ -13,6 +13,9 @@ export class ChatRepository {
                     }
                 },
                 messages: {
+                    with: {
+                        sender: true,
+                    },
                     orderBy: (m, { asc }) => [asc(m.createdAt)],
                     limit: 100,
                 }

@@ -356,7 +356,9 @@ export default function CastingDetailPage() {
                                         </Avatar>
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <h3 className="font-bold">{app.talent?.profile?.fullName || app.talent?.name}</h3>
+                                                <Link href={`/talents/${app.talent?.profile?.id}`}>
+                                                    <h3 className="font-bold">{app.talent?.profile?.fullName || app.talent?.name}</h3>
+                                                </Link>
                                                 <Badge variant={
                                                     app.status === "accepted" ? "success" :
                                                         app.status === "rejected" ? "destructive" :

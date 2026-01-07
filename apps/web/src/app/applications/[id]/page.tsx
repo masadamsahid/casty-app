@@ -175,7 +175,7 @@ export default function ApplicationDetailPage() {
                                     </p>
                                 )}
                                 <Button variant="link" className="p-0 h-auto text-xs" asChild>
-                                    <Link href={`/talents/${application.talentId}`}>View Full Profile</Link>
+                                    <Link href={`/talents/${application.talent?.profile?.id}`}>View Full Profile</Link>
                                 </Button>
                             </div>
                         </div>

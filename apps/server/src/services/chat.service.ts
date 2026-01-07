@@ -5,7 +5,7 @@ export class ChatService {
     async getRoomMessages(roomId: string) {
         const room = await chatRepository.findRoomById(roomId);
         if (!room) throw new Error("Chat room not found");
-        return room;
+        return room.messages;
     }
 
     async sendMessage(userId: string, roomId: string, content: string, type: "text" | "image" = "text") {
