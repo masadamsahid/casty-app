@@ -10,7 +10,7 @@ export const updateProfile = async (data: any) => {
     return response.data;
 };
 
-export const updateSettings = async (data: { username?: string; isTalent?: boolean }) => {
+export const updateSettings = async (data: { name?: string; username?: string; isTalent?: boolean }) => {
     const response = await axiosClient.patch("/users/settings", data);
     return response.data;
 };

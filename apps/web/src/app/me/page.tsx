@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import ProfileForm from "@/components/profile-form";
-import { Edit2, MapPin, Phone, Mail, Calendar, User, Ruler, Weight, Briefcase } from "lucide-react";
+import AccountForm from "@/components/account-form";
+import { Edit2, MapPin, Phone, Mail, Calendar, User, Ruler, Weight, Briefcase, Settings, UserCircle } from "lucide-react";
 
 export default function MePage() {
     const [data, setData] = useState<any>(null);
@@ -37,17 +38,28 @@ export default function MePage() {
         return (
             <div className="container mx-auto px-4 py-8 max-w-4xl">
                 <Skeleton className="h-12 w-48 mb-6" />
-                <Card>
-                    <CardHeader>
-                        <Skeleton className="h-8 w-64 mb-2" />
-                        <Skeleton className="h-4 w-96" />
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-2/3" />
-                    </CardContent>
-                </Card>
+                <div className="space-y-8">
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-8 w-64 mb-2" />
+                            <Skeleton className="h-4 w-96" />
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-full" />
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-8 w-64 mb-2" />
+                            <Skeleton className="h-4 w-96" />
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-full" />
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         );
     }
@@ -87,87 +99,148 @@ export default function MePage() {
 
             <div className="grid grid-cols-1 gap-8">
                 {isEditing ? (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Edit Your Information</CardTitle>
-                            <CardDescription>Update your profile details to make yourself more discoverable.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <ProfileForm
-                                initialData={profile}
-                                onSuccess={() => {
-                                    setIsEditing(false);
-                                    fetchData();
-                                }}
-                            />
-                        </CardContent>
-                    </Card>
+                    <>
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <Settings className="h-5 w-5 text-primary" />
+                                    <CardTitle>Account Settings</CardTitle>
+                                </div>
+                                <CardDescription>Update your essential account information.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <AccountForm
+                                    initialData={{
+                                        name: user.name,
+                                        username: user.username,
+                                        isTalent: user.isTalent,
+                                    }}
+                                    onSuccess={fetchData}
+                                />
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <UserCircle className="h-5 w-5 text-primary" />
+                                    <CardTitle>Profile Details</CardTitle>
+                                </div>
+                                <CardDescription>Update your professional profile to make yourself more discoverable.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <ProfileForm
+                                    initialData={profile}
+                                    onSuccess={() => {
+                                        setIsEditing(false);
+                                        fetchData();
+                                    }}
+                                />
+                            </CardContent>
+                        </Card>
+                    </>
                 ) : (
                     <>
-                        {/* Basic Info */}
+                        {/* Account Details Section */}
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                                <div>
-                                    <CardTitle className="text-2xl">
-                                        {profile?.fullName || user.name}
-                                    </CardTitle>
-                                    <CardDescription>@{user.username || "username_not_set"}</CardDescription>
+                                <div className="flex items-center gap-2">
+                                    <Settings className="h-5 w-5 text-primary" />
+                                    <CardTitle>Account Details</CardTitle>
                                 </div>
                                 {user.isTalent && (
-                                    <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
-                                        Talent
+                                    <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
+                                        Active Talent
                                     </Badge>
                                 )}
                             </CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                                    <div className="flex items-center text-sm">
-                                        <Mail className="mr-2 h-4 w-4 text-muted-foreground" />
-                                        <span>{user.email}</span>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-medium text-muted-foreground">Display Name</p>
+                                        <p className="text-lg font-medium">{user.name}</p>
                                     </div>
-                                    {profile?.country && (
-                                        <div className="flex items-center text-sm">
-                                            <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
-                                            <span>{profile.country}</span>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-medium text-muted-foreground">Username</p>
+                                        <p className="text-lg font-medium">@{user.username || "not_set"}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-medium text-muted-foreground">Email Address</p>
+                                        <div className="flex items-center gap-2 text-lg font-medium">
+                                            <Mail className="h-4 w-4 text-muted-foreground" />
+                                            {user.email}
                                         </div>
-                                    )}
-                                    {profile?.phone && (
-                                        <div className="flex items-center text-sm">
-                                            <Phone className="mr-2 h-4 w-4 text-muted-foreground" />
-                                            <span>{profile.phone}</span>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-medium text-muted-foreground">Account Status</p>
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant={user.isTalent ? "default" : "outline"}>
+                                                {user.isTalent ? "Talent Account" : "Standard Account"}
+                                            </Badge>
                                         </div>
-                                    )}
-                                    {profile?.publicEmail && profile.publicEmail !== user.email && (
-                                        <div className="flex items-center text-sm">
-                                            <Mail className="mr-2 h-4 w-4 text-muted-foreground" />
-                                            <span>{profile.publicEmail} (Public)</span>
-                                        </div>
-                                    )}
-                                    {profile?.birthDate && (
-                                        <div className="flex items-center text-sm">
-                                            <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-                                            <span>Born on {new Date(profile.birthDate).toLocaleDateString()}</span>
-                                        </div>
-                                    )}
-                                    {profile?.gender && (
-                                        <div className="flex items-center text-sm capitalize">
-                                            <User className="mr-2 h-4 w-4 text-muted-foreground" />
-                                            <span>{profile.gender}</span>
-                                        </div>
-                                    )}
+                                    </div>
                                 </div>
+                            </CardContent>
+                        </Card>
 
-                                {profile?.description && (
-                                    <>
-                                        <Separator className="my-6" />
-                                        <div>
-                                            <h3 className="text-lg font-semibold mb-2">About Me</h3>
-                                            <p className="text-sm text-balance leading-relaxed whitespace-pre-wrap">
+                        <Separator className="my-2" />
+
+                        {/* Profile Info */}
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <UserCircle className="h-5 w-5 text-primary" />
+                                    <CardTitle>Profile Information</CardTitle>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-6">
+                                    <div className="text-2xl font-bold">
+                                        {profile?.fullName || user.name}
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {profile?.country && (
+                                            <div className="flex items-center text-sm">
+                                                <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
+                                                <span>{profile.country}</span>
+                                            </div>
+                                        )}
+                                        {profile?.phone && (
+                                            <div className="flex items-center text-sm">
+                                                <Phone className="mr-2 h-4 w-4 text-muted-foreground" />
+                                                <span>{profile.phone}</span>
+                                            </div>
+                                        )}
+                                        {profile?.publicEmail && (
+                                            <div className="flex items-center text-sm">
+                                                <Mail className="mr-2 h-4 w-4 text-muted-foreground" />
+                                                <span>{profile.publicEmail} (Public Contact)</span>
+                                            </div>
+                                        )}
+                                        {profile?.birthDate && (
+                                            <div className="flex items-center text-sm">
+                                                <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
+                                                <span>Born on {new Date(profile.birthDate).toLocaleDateString()}</span>
+                                            </div>
+                                        )}
+                                        {profile?.gender && (
+                                            <div className="flex items-center text-sm capitalize">
+                                                <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                                                <span>{profile.gender}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {profile?.description && (
+                                        <div className="pt-4 border-t">
+                                            <h3 className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">About Me</h3>
+                                            <p className="text-sm leading-relaxed whitespace-pre-wrap">
                                                 {profile.description}
                                             </p>
                                         </div>
-                                    </>
-                                )}
+                                    )}
+                                </div>
                             </CardContent>
                         </Card>
 
@@ -213,7 +286,7 @@ export default function MePage() {
                             </CardContent>
                         </Card>
 
-                        {/* Skills (Placeholder for future implementation if needed, though skills are in the data) */}
+                        {/* Skills */}
                         {profile?.skills && profile.skills.length > 0 && (
                             <Card>
                                 <CardHeader>

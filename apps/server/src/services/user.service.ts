@@ -47,7 +47,7 @@ export class UserService {
         return profile;
     }
 
-    async updateUserSettings(userId: string, data: { username?: string; isTalent?: boolean }) {
+    async updateUserSettings(userId: string, data: { name?: string; username?: string; isTalent?: boolean }) {
         if (data.username) {
             const existing = await userRepository.findByUsername(data.username);
             if (existing && existing.id !== userId) {
