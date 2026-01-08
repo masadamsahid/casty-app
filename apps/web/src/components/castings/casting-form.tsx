@@ -52,7 +52,10 @@ const formSchema = z.object({
     description: z.string().min(20, "Description must be at least 20 characters"),
     location: z.string().optional(),
     heightCm: z.coerce.number().optional(),
-    deadline: z.date().optional(),
+    deadline: z.preprocess((arg) => {
+        if (typeof arg === "string" || arg instanceof Date) return new Date(arg);
+        return arg;
+    }, z.date()).optional(),
     budget: z.string().optional(),
     isCoverLetterRequired: z.boolean().default(false),
     status: z.enum(["draft", "published", "closed"]),
@@ -144,6 +147,7 @@ export default function CastingForm({ initialData, onSubmit, loading }: CastingF
             const submissionData = {
                 ...values,
                 agencyId: values.agencyId === "none" ? undefined : values.agencyId,
+                deadline: values.deadline ? values.deadline.toISOString() : undefined,
             };
             await onSubmit(submissionData as any);
         } catch (error: any) {

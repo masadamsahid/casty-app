@@ -6,6 +6,7 @@ import { getCastings, type CastingFilters, type Casting } from "@/lib/api/castin
 import { Search } from "lucide-react";
 import CastingCard from "@/components/castings/casting-card";
 import CastingFiltersComponent from "@/components/castings/casting-filters";
+import CreateCastingDialog from "@/components/castings/create-casting-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
@@ -109,10 +110,13 @@ function CastingsContent() {
                         Find the perfect role for you. Filter by category, location, and more.
                     </p>
                 </div>
-                <div className="text-sm font-medium">
-                    Showing <span className="text-primary">{Math.min(total, (filters.offset || 0) + 1)}</span> -{" "}
-                    <span className="text-primary">{Math.min(total, (filters.offset || 0) + castings.length)}</span> of{" "}
-                    <span className="text-primary">{total}</span> castings
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="text-sm font-medium">
+                        Showing <span className="text-primary">{Math.min(total, (filters.offset || 0) + 1)}</span> -{" "}
+                        <span className="text-primary">{Math.min(total, (filters.offset || 0) + castings.length)}</span> of{" "}
+                        <span className="text-primary">{total}</span> castings
+                    </div>
+                    <CreateCastingDialog onSuccess={() => fetchCastings(filters)} />
                 </div>
             </div>
 

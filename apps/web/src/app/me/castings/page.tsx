@@ -7,8 +7,9 @@ import { getMe } from "@/lib/api/user";
 import CastingCard from "@/components/castings/casting-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Plus, Search, Filter } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import CreateCastingDialog from "@/components/castings/create-casting-dialog";
 
 export default function MyCastingsPage() {
     const router = useRouter();
@@ -18,28 +19,32 @@ export default function MyCastingsPage() {
     const [user, setUser] = useState<any>(null);
     const [searchQuery, setSearchQuery] = useState("");
 
-    useEffect(() => {
-        const fetchMyCastings = async () => {
-            setLoading(true);
-            try {
-                const userRes = await getMe();
-                if (!userRes.success) {
-                    router.push("/login?callbackUrl=/me/castings");
-                    return;
-                }
-                setUser(userRes.data);
-
-                const response = await getMyCastings();
-                if (response.success) {
-                    setCastings(response.data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch my castings:", error);
-            } finally {
-                setLoading(false);
+    const fetchMyCastings = async () => {
+        setLoading(true);
+        try {
+            const userRes = await getMe();
+            if (!userRes.success) {
+                router.push("/login?callbackUrl=/me/castings");
+                return;
             }
-        };
+            setUser(userRes.data);
 
+            const response = await getMyCastings();
+            if (response.success) {
+                if (Array.isArray(response.data)) {
+                    setCastings(response.data);
+                } else if (response.data && Array.isArray(response.data.data)) {
+                    setCastings(response.data.data);
+                }
+            }
+        } catch (error) {
+            console.error("Failed to fetch my castings:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchMyCastings();
     }, [router]);
 
@@ -56,10 +61,11 @@ export default function MyCastingsPage() {
                         Manage all the castings you have created and view applications.
                     </p>
                 </div>
-                <Button onClick={() => router.push("/castings?action=create")} size="lg" className="rounded-full px-6">
-                    <Plus className="w-5 h-5 mr-2" />
-                    Post New Casting
-                </Button>
+                <CreateCastingDialog
+                    onSuccess={fetchMyCastings}
+                    buttonText="Post New Casting"
+                    className="rounded-full px-6"
+                />
             </div>
 
             <div className="flex items-center gap-4 mb-8">
@@ -99,9 +105,11 @@ export default function MyCastingsPage() {
                     <p className="text-muted-foreground mt-2">
                         {searchQuery ? "Try searching for something else." : "You haven't posted any castings yet."}
                     </p>
-                    <Button variant="default" className="mt-6" onClick={() => router.push("/castings?action=create")}>
-                        Post your first casting
-                    </Button>
+                    <CreateCastingDialog
+                        onSuccess={fetchMyCastings}
+                        buttonText="Post your first casting"
+                        className="mt-6"
+                    />
                 </div>
             )}
         </div>
